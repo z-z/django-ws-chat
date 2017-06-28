@@ -1,1 +1,5 @@
 {% extends 'base.html' %}
+
+{% block content %}
+<button onclick="socket.send('hello <button>');">send</button>
+{% endblock %}
