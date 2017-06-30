@@ -19,5 +19,7 @@ from chat import views as chat_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'', chat_views.index),
+    url(r'auth/', chat_views.auth),
+    url(r'logout/', chat_views.auth_out),
+    url(r'^$', chat_views.index),
 ]

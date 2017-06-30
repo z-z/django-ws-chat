@@ -1,5 +1,53 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<button onclick="socket.send('hello <button>');">send</button>
+<div class="panel panel-default" ng-controller="ctrl">
+    <div class="panel-heading row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="row">
+                Привет<span ng-if="user">, {$ user $}</span>!
+                <div class="col-md-2 pull-right">
+                    <div class="row text-right">
+                        <div class="btn btn-primary" ng-if="user" ng-click="logout()">Выйти</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="chat col-md-6 col-md-offset-3">
+                <div class="msg row" ng-repeat="msg in messages">
+                    <div class="col-md-2 login text-right">{{ msg.user }}</div>
+                    <div class="col-md-8 text">{{ msg.body }}</div>
+                    <div class="col-md-2 time text-right">{{ msg.time }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <form class="form-inline col-md-offset-3 col-md-6 alert alert-warning" ng-if="!user" ng-submit="login()">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="row">
+                            <input type="text" ng-model="login_data.username" class="form-control" placeholder="Login" required>
+                            <input type="text" ng-model="login_data.password" class="form-control" placeholder="Password" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2"><input type="submit" value="Войти" class="btn btn-primary"></div>
+                </div>
+            </form>
+            <form class="form-inline col-md-offset-3 col-md-6" ng-if="user">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="row">
+                            <textarea rows="1" style="width: 100%" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-2"><input ng-click="send()" type="submit" value="Отправить" class="btn btn-primary"></div>
+                </div>
+            </form>
+            <div ng-if="error" class="alert alert-danger col-md-offset-3 col-md-6">Неверный пароль или логин</div>
+        </div>
+    </div>
+</div>
 {% endblock %}
