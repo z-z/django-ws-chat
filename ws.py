@@ -10,11 +10,15 @@ import asyncio
 import websockets
 from chat.views import saver
 
+connected = set()
+
 async def loop(websocket, path):
+    global connected
+    connected.add(websocket)
     while True:
         data = await websocket.recv()
         response = saver(data)
-        await websocket.send(response)
+        await asyncio.wait([ws.send(response) for ws in connected])
 
 start_server = websockets.serve(loop, '127.0.0.1', 5678)
 

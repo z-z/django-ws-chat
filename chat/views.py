@@ -1,12 +1,23 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.http import JsonResponse
+import json, time, math
+
+
 
 def index(request):
     return render(request, 'index.html')
 
-def saver(data):
-    return JsonResponse(data)
+def saver(msg):
+    msg = json.loads(msg)
+    data = msg['data']
+    user = User.objects.get(pk=msg['uid'])
+    return json.dumps({
+        'body': data,
+        'user': user.username,
+        'time': '{}000'.format(round(time.time()))#datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    })
 
 def auth(request):
     username = request.POST.get('username', False)

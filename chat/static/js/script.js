@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngWebsocket']);
+var app = angular.module('app', []);
 
 app.config(function($httpProvider, $interpolateProvider){
     $httpProvider.defaults.xsrfCookieName = 'csrftoken';
@@ -8,20 +8,34 @@ app.config(function($httpProvider, $interpolateProvider){
     $interpolateProvider.endSymbol('$}');
 });
 
+app.factory('ws', function ($rootScope) {
+    var ws = new WebSocket('ws://localhost:5678/'), messages = [];
+
+    ws.onmessage = function(msg){ messages.push(JSON.parse(msg.data)); $rootScope.$broadcast('msg'); };
+
+    var send = function(data){if(user_id > 0) ws.send(JSON.stringify({data: data, uid: user_id}));};
+
+    return {
+        send: send,
+        messages: messages
+    };
+});
+
 app.controller('ctrl', Ctrl);
 
-function Ctrl($scope, $websocket, $http){
+function Ctrl($scope, $http, ws){
 
-    $scope.messages = [];
+    $scope.$on('msg', function(){ $scope.messages = ws.messages; $scope.$digest(); });
+
     $scope.login_data = {};
     $scope.error = false;
     $scope.user = user;
+    $scope.msg = {};
 
-    var ws = $websocket.$new({ url: 'ws://localhost:5678', protocols: [] });
-    ws.$on('$open', function(){console.log('connect');});
-    ws.$on('$message', function(msg){console.log('message: '); console.log(msg);});
-
-    $scope.send = function(){};
+    $scope.send = function(){
+        if($scope.msg.body && $scope.msg.body != '') ws.send($scope.msg.body);
+        $scope.msg.body = '';
+    };
 
     $scope.login = function(){
         $http.post('/auth/', $.param($scope.login_data))

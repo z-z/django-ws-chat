@@ -17,10 +17,12 @@
     <div class="panel-body">
         <div class="row">
             <div class="chat col-md-6 col-md-offset-3">
-                <div class="msg row" ng-repeat="msg in messages">
-                    <div class="col-md-2 login text-right">{{ msg.user }}</div>
-                    <div class="col-md-8 text">{{ msg.body }}</div>
-                    <div class="col-md-2 time text-right">{{ msg.time }}</div>
+                <div class="container-fluid">
+                    <div class="msg row" ng-repeat="msg in messages">
+                        <div class="col-md-2 login text-right">{$ msg.user $}</div>
+                        <pre class="col-md-8 text">{$ msg.body $}</pre>
+                        <div class="col-md-2 time text-right">{$ msg.time|date:'HH:mm' $}</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -40,7 +42,8 @@
                 <div class="row">
                     <div class="col-md-10">
                         <div class="row">
-                            <textarea rows="1" style="width: 100%" class="form-control"></textarea>
+                            <textarea ng-model="msg.body" rows="1" style="width: 100%; margin-bottom: 15px;" class="form-control"  aria-describedby="helper"></textarea>
+                            <p id="helper" class="form-text text-muted">Отправить <kbd><kbd>Ctrl</kbd> + <kbd>Enter</kbd></kbd></p>
                         </div>
                     </div>
                     <div class="col-md-2"><input ng-click="send()" type="submit" value="Отправить" class="btn btn-primary"></div>
